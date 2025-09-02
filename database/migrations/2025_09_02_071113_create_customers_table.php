@@ -6,21 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('customers', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('name', 100);
-            $table->string('phone', 20)->unique();   // required & unique
-            $table->string('email', 150)->nullable(); // optional
-            $table->string('password');              // required (hashed)
-            $table->boolean('is_verified')->default(0);
+            $table->string('phone', 20)->unique();
+            $table->text('address');
+            $table->decimal('opening_balance', 12, 2)->default(0);
             $table->timestamps();
             $table->softDeletes();
 
+            $table->index('user_id');
             $table->index('phone');
         });
     }
 
     public function down(): void {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('customers');
     }
 };
