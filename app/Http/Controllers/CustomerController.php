@@ -184,7 +184,7 @@ class CustomerController extends Controller
         // Totals
         $totalCredits = $transactions->where('type','credit')->sum('amount');
         $totalDebits  = $transactions->where('type','debit')->sum('amount');
-        $balance = $totalCredits - $totalDebits + $customer->opening_balance;
+        $balance      = $totalCredits - $totalDebits;
 
         $fileType = $request->file_type ?? 'pdf';
         $action   = $request->action ?? 'download';
