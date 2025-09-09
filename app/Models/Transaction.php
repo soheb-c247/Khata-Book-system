@@ -18,6 +18,9 @@ class Transaction extends Model
         'date',
     ];
 
+    protected $casts = [
+        'date' => 'datetime',
+    ];
     /**
      * Relation: Transaction belongs to a Customer
      */

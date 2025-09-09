@@ -1,22 +1,24 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\Customer;
 use Illuminate\Http\Request;
+use App\Models\Customer;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Total customers
-        $totalCustomers = Customer::count();
+        $userId = auth()->id();
 
-        // Total balance across all customers (calculated via accessor)
-        $totalBalance = Customer::all()->sum(fn($c) => $c->balance);
+        $customers = Customer::where('user_id', $userId)->get();
 
-        // Customers with outstanding balances
-        $outstandingCustomers = Customer::orderBy('updated_at', 'asc')->get();
+        $totalCustomers = $customers->count();
+
+        $totalBalance = $customers->sum(function ($c) {
+            return (float) $c->balance;
+        });
+        
+        $outstandingCustomers = $customers->sortBy('updated_at')->values();
 
         return view('dashboard', compact('totalCustomers', 'totalBalance', 'outstandingCustomers'));
     }

@@ -11,6 +11,9 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        $this->call([
+            CustomerSeeder::class,
+        ]);
         // Create 5 shopkeepers (users)
         User::factory(5)
             ->has(

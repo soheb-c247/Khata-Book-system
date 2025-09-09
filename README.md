@@ -1,61 +1,147 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📘 KhataBook – Customer & Transaction Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A **Laravel-based KhataBook** that allows shopkeepers to manage customers, record transactions (credit/debit), track balances, and generate customer statements in **PDF, CSV, and Excel** formats.  
+Built with Laravel, Blade, TailwindCSS, jQuery, Toastr, and DomPDF.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 👥 User & Customer Management
+* Shopkeepers can **register/login** using phone and password (powered by **Laravel Breeze** for authentication).
+* Manage customers with details: Name, Phone, Address, Opening Balance.
+* Secure authentication with hashed passwords and session management.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 💰 Transactions
+* Record **Credit/Debit** transactions with notes.
+* Auto-calculation of **total credits, debits, and balance**.
+* Transaction history viewable per customer.
 
-## Learning Laravel
+### 📊 Customer Statement
+* Generate **PDF / CSV / Excel** statements using `barryvdh/laravel-dompdf`.
+* Apply **date filters**: Current Month, Last 3 Months, or Custom Range.
+* Handles **no transactions case** gracefully.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 🔔 Flash Notifications
+* Toastr integration for **success, error, warning, info** messages.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 🛠 Seeder & Factories
+* One fixed user with customers and transactions.
+* Additional random users with customers & transactions for demo purposes.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 🔐 Authentication & Authorization
+* User authentication handled by **Laravel Breeze**.
+* Registration, login, password reset flows included.
+* Middleware ensures only authenticated shopkeepers access customer/transaction pages.
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## ⚙️ Setup Instructions
 
-### Premium Partners
+### 1. Clone Repository
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
 
-## Contributing
+```bash
+git clone https://github.com/soheb-c247/Khata-Book-system
+cd Khata-Book-system
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```
+### 2. Install Dependencies
 
-## Code of Conduct
+```bash
+composer install
+npm install && npm run dev
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 3. Environment Setup
 
-## Security Vulnerabilities
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Update your `.env` file with correct **DB credentials**.
 
-## License
+### 4. Migrate & Seed Database
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+php artisan migrate:fresh --seed
+```
+
+This will insert:
+
+* **1 fixed user (Shoaib) with 1 fixed customer & transactions**
+* **8 random customers for Shoaib**
+* **5 additional shopkeepers, each with 10 customers and 15 transactions**
+
+### 5. Start Server
+
+```bash
+php artisan serve
+```
+
+Visit: **[http://127.0.0.1:8000](http://127.0.0.1:8000)**
+
+---
+
+## 👤 Demo Credentials
+
+You can log in with the seeded user:
+
+* **phone**: `8827738545`
+* **Password**: `password`
+
+---
+
+## 🔄 Working Flow
+
+1. **Login as Shopkeeper** (Breeze handles login & registration)
+2. **Add Customers** (Name, Phone, Address, Opening Balance{optional}).
+3. **Record Transactions** → Credit / Debit.
+4. **View Customer Details** → Balance auto-calculated.
+5. **Generate Statement**:
+   * Select Date Range (Current Month / Last 3 Months / Custom).
+   * Choose Output Format (PDF).
+   * Download or Email (Email feature planned).
+6. **Flash Notifications** show operation results.
+
+---
+
+## 📌 Areas of Improvement
+
+* 📧 **Email Statement** → Currently not implemented.
+* 📱 **Responsive UI Enhancements** → Improve mobile view for transactions.
+* 📊 **Charts & Analytics** → Show monthly credits/debits in graphs.
+* 🔐 **Role Management** → Add multiple shopkeepers with permissions.
+* 🧾 **GST/Invoice Integration** → Generate invoices with GST support.
+* 🌐 **Multi-language Support** → English + Hindi for wider usability.
+* 📩 **Multiple Options for statement** → Excel, CSV etc .
+
+---
+
+## 🏗 Tech Stack
+
+* **Backend**: Laravel 12
+* **Authentication**: Laravel Breeze
+* **Frontend**: Blade, TailwindCSS, jQuery, Toastr
+* **Database**: MySQL
+* **PDF Export**: barryvdh/laravel-dompdf
+
+---
+
+## 💡 Laravel Breeze Authentication
+
+This project uses **Laravel Breeze** to provide simple and lightweight authentication scaffolding.  
+
+**Key Features:**
+* **User Registration** – Quick signup for new shopkeepers.
+* **Login / Logout** – Secure session handling for authenticated users.
+* **Password Reset** – Easily reset forgotten passwords via email.
+* **Email Verification (optional)** – Ensure valid email addresses.
+* **TailwindCSS-based UI** – Fully customizable and responsive design.
+* **Route Protection** – Secure pages so that only authenticated shopkeepers can access customer and transaction data.
+
+---
+
+📩 *Maintained by Mohammad Soheb*
+

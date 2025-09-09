@@ -6,25 +6,27 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Middleware\AuthorizeCustomerAccess;
 
 Route::get('/', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::middleware('auth')->group(function () {
+    
+    Route::resource('customers', CustomerController::class)->middleware(AuthorizeCustomerAccess::class);
+
+    Route::resource('transactions', TransactionController::class)->parameters([
+        'transactions' => 'encryptedId'
+    ])->middleware(AuthorizeCustomerAccess::class);
+
+
+    Route::post('/customers/{customer}/statement', [CustomerController::class, 'statement'])
+        ->name('customers.statement');
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-Route::resource('customers', CustomerController::class);
-Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
-
-});
-
-Route::middleware(['auth'])->group(function () {
-    // Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    // Route::resource('customers', CustomerController::class);
-    // Route::resource('transactions', TransactionController::class);
 });
 
 

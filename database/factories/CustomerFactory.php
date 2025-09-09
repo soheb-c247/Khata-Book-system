@@ -15,7 +15,7 @@ class CustomerFactory extends Factory
         return [
             'user_id'         => User::inRandomOrder()->first()->id ?? User::factory(),
             'name'            => $this->faker->name(),
-            'phone'           => $this->faker->numerify($this->faker->randomElement([6,7,8,9]) . '########'),
+            'phone'           => $this->faker->numerify($this->faker->randomElement([6,7,8,9]) . '#########'),
             'address'         => $this->faker->address(),
             'opening_balance' => $this->faker->randomFloat(2, 0, 5000),
         ];

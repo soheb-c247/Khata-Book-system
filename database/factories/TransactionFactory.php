@@ -17,7 +17,7 @@ class TransactionFactory extends Factory
             'type'        => $this->faker->randomElement(['credit', 'debit']),
             'amount'      => $this->faker->randomFloat(2, 50, 1000),
             'notes'       => $this->faker->randomElement(['given cash', 'from UPI', 'Others payment']),
-            'date'        => $this->faker->date(),
+            'date'        => $this->faker->dateTimeBetween('2025-01-01', '2025-8-31')->format('Y-m-d'), 
         ];
     }
 }

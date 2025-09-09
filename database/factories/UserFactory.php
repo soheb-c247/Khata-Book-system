@@ -14,10 +14,10 @@ class UserFactory extends Factory
     {
         return [
             'name'        => $this->faker->name(),
-            'phone'       => $this->faker->numerify($this->faker->randomElement([6,7,8,9]) . '########'),
+            'phone'       => $this->faker->numerify($this->faker->randomElement([6,7,8,9]) . '#########'),
             'email'       => $this->faker->safeEmail(),
-            'password'    => Hash::make('password'), // default password
-            'is_verified' => $this->faker->boolean(70), // 70% verified
+            'password'    => Hash::make('password'), 
+            'is_verified' => 1, 
         ];
     }
 }

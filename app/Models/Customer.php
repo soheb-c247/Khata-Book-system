@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
-
 class Customer extends Model
 {
     use HasFactory, SoftDeletes;
@@ -16,6 +15,10 @@ class Customer extends Model
         'phone',
         'address',
         'opening_balance',
+    ];
+    
+    protected $casts = [
+        'opening_balance' => 'decimal:2',
     ];
 
     /**
@@ -35,13 +38,51 @@ class Customer extends Model
     }
 
     /**
-     * Accessor: Calculate current balance
+     * Total credits (numeric)
      */
-    public function getBalanceAttribute()
+    public function getTotalCreditsAttribute(): float
     {
-        $credits = $this->transactions()->where('type', 'credit')->sum('amount');
-        $debits  = $this->transactions()->where('type', 'debit')->sum('amount');
+        // Using the relationship collection if loaded avoids extra queries
+        if ($this->relationLoaded('transactions')) {
+            return (float) $this->transactions->where('type', 'credit')->sum('amount');
+        }
+        return (float) $this->transactions()->where('type', 'credit')->sum('amount');
+    }
 
-        return $this->opening_balance + ($credits - $debits);
+    /**
+     * Total debits (numeric)
+     */
+    public function getTotalDebitsAttribute(): float
+    {
+        if ($this->relationLoaded('transactions')) {
+            return (float) $this->transactions->where('type', 'debit')->sum('amount');
+        }
+        return (float) $this->transactions()->where('type', 'debit')->sum('amount');
+    }
+
+    /**
+     * Final balance (numeric)
+     * Formula: Total Credits - Total Debits
+     */
+    public function getBalanceAttribute(): string
+    {
+        $credits = (double) $this->total_credits;
+        $debits  = (double) $this->total_debits;
+
+        return number_format(($credits - $debits), 2, '.', '');
+    }
+
+    public function addOpeningBalance(float $amount)
+    {
+        if ($amount <= 0) {
+            return null;
+        }
+
+        return $this->transactions()->create([
+            'type'   => 'credit',
+            'amount' => $amount,
+            'notes'  => 'Opening balance',
+            'date'   => now()->toDateString(),
+        ]);
     }
 }

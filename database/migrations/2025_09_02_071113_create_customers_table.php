@@ -10,7 +10,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('name', 100);
-            $table->string('phone', 20)->unique();
+            $table->string('phone', 20);
             $table->text('address');
             $table->decimal('opening_balance', 12, 2)->default(0);
             $table->timestamps();
