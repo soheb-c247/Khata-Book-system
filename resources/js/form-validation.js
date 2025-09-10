@@ -24,7 +24,7 @@ $(document).ready(function () {
                         error = messages.digits(r.field, r.length);
                         break;
                     }
-                    if (r.rule === 'regex' && !r.regex.test(value)) {
+                    if (r.rule === 'regex' && value.trim() !== '' && !r.regex.test(value.trim())) {
                         error = messages.regex(r.field);
                         break;
                     }
@@ -39,6 +39,24 @@ $(document).ready(function () {
                     if (r.rule === 'match' && value !== $(r.matchWith).val()) {
                         error = messages.match(r.field, r.matchWithName);
                         break;
+                    }
+                    if (r.rule === 'file' && value !== '') {
+                        const input = $(`${formId} #${field}`)[0];
+                        if (input.files.length > 0) {
+                            const file = input.files[0];
+
+                            // Check type
+                            if (!r.allowedTypes.includes(file.type)) {
+                                error = messages.fileType(r.field, ['JPG', 'JPEG', 'PNG', 'PDF']);
+                                break;
+                            }
+
+                            // Check size
+                            if (file.size > r.maxSize) {
+                                error = messages.fileSize(r.field, r.maxSize / (1024*1024));
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -99,7 +117,9 @@ $(document).ready(function () {
         regex: field => `${field} format is invalid.`,
         max: (field, len) => `${field} cannot exceed ${len} characters.`,
         min: (field, min) => `${field} must be at least ${min}.`,
-        match: (field, matchWithName) => `${field} must match ${matchWithName}.`
+        match: (field, matchWithName) => `${field} must match ${matchWithName}.`,
+        fileType: (field, types) => `${field} must be one of: ${types.join(', ')}.`,
+        fileSize: (field, sizeMB) => `${field} must be less than ${sizeMB} MB.`
     };
 
     // Customer form rules
@@ -119,8 +139,7 @@ $(document).ready(function () {
             { rule: 'max', field: 'Address', length: 200 }
         ],
         opening_balance: [
-            { rule: 'numeric', field: 'Opening Balance' },
-            { rule: 'min', field: 'Opening Balance', min: 0 }
+            { rule: 'regex', field: 'Amount', regex: /^(0|[1-9]\d*)(\.\d{1,2})?$/ } 
         ]
     };
 
@@ -133,14 +152,23 @@ $(document).ready(function () {
         ],
         amount: [
             { rule: 'required', field: 'Amount' },
-            { rule: 'numeric', field: 'Amount' },
-            { rule: 'min', field: 'Amount', min: 1 }
+            { rule: 'min', field: 'Amount', min: 1 },
+            { rule: 'regex', field: 'Amount', regex: /^(0|[1-9]\d*)(\.\d{1,2})?$/ } 
         ],
         date: [
-            { rule: 'required', field: 'Date' }
+            { rule: 'required', field: 'Date' },
+            { rule: 'regex', field: 'Date', regex: /^(202[0-9]|2030)-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/ }
         ],
         notes: [
             { rule: 'max', field: 'Notes', length: 200 }
+        ],
+        file: [
+            { 
+                rule: 'file', 
+                field: 'File', 
+                allowedTypes: ['image/jpeg','image/jpg','image/png','application/pdf'], 
+                maxSize: 2 * 1024 * 1024 // 2 MB
+            }
         ]
     };
         
@@ -153,7 +181,6 @@ $(document).ready(function () {
         ],
         password: [
             { rule: 'required', field: 'Password' },
-            { rule: 'min', field: 'Password', min: 6 } 
         ],
     };
 

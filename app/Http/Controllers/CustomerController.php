@@ -43,11 +43,10 @@ class CustomerController extends Controller
 
         $rows = $customer->transactions->map(function ($t) {
             return [
-                'date' => $t->date->format('d M, Y'),
-                'type' => ucfirst($t->type),
-                'amount' => $t->amount,
-                'notes' => $t->notes ?: 'N/A',
-                'id' => SecureIdService::encrypt($t->id),
+                'date'   => $t->date->format('d M, Y'),
+                'type'   => ucfirst($t->type),
+                'amount' => '<span class="' . ($t->type === 'credit' ? 'text-green-600 font-medium' : 'text-red-600 font-medium') . '">₹' . number_format($t->amount, 2) . '</span>',
+                'id'     => SecureIdService::encrypt($t->id),
             ];
         });
 

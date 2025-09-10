@@ -67,7 +67,7 @@
             {{-- Add Button --}}
             @if($buttonRoute)
                 <a href="{{ $buttonRoute }}" 
-                class="bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
+                    class="bg-blue-600 text-white text-sm px-3 py-1 rounded hover:bg-blue-700 transition" >
                     {{ $buttonText }}
                 </a>
             @endif
@@ -80,70 +80,73 @@
     {{-- Table --}}
     <div class="overflow-x-auto">
         <table id="{{ $tableId }}" class="min-w-full text-left text-gray-600 text-sm">
-            <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+            <thead class="border-b hover:bg-gray-50 transition">
                 <tr>
-                    <th class="px-4 py-3">#</th>
+                    <th class="px-4 py-3 text-left">#</th>
                     @foreach ($columns as $key => $col)
-                        <th class="px-4 py-3">{{ $col }}</th>
+                         <th class="px-4 py-3"
+                            style="text-align: {{ in_array(strtolower($key), ['name']) ? 'left' : 'center' }};">
+                            {{ $col }}
+                        </th>
                     @endforeach
                     @if($editRoute || $deleteRoute || $viewRoute)
-                        <th class="px-4 py-3 text-right">Actions</th>
+                        <th class="px-4 py-3 " style="text-align: center;">Actions</th>
                     @endif
                 </tr>
             </thead>
             <tbody>
                 @foreach ($rows as $index => $row)
                     <tr class="border-b hover:bg-gray-50 transition">
-                        <td class="px-4 py-3">{{ $index + 1 }}</td>
+                        {{-- # column --}}
+                       <td class="px-2 py-1 text-left">{{ $index + 1 }}</td>
+
+                        {{-- Dynamic columns --}}
                         @foreach ($columns as $key => $col)
-                            <td class="px-4 py-3">{!! $row[$key] ?? '' !!}</td>
+                            <td class="px-2 py-1"style="text-align: {{ in_array(strtolower($key), ['name']) ? 'left' : 'center' }};">
+                                {!! $row[$key] ?? '' !!}
+                            </td>
                         @endforeach
 
-                        {{-- Actions --}}
                         @if($editRoute || $deleteRoute || $viewRoute)
-                            <td class="px-1 py-1 flex">
-                                {{-- View --}}
-                                @if($viewRoute)
-                                    <a href="{{ route($viewRoute, $row['id']) }}" title="View"
-                                    class="p-2 rounded hover:bg-green-100 text-green-600 transition">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                        </svg>
-                                    </a>
-                                @endif
+                            <td class="px-1 py-0.5 text-center">
+                                <div class="flex justify-center items-center gap-1">
+                                    {{-- View --}}
+                                    @if($viewRoute)
+                                        <a href="{{ route($viewRoute, $row['id']) }}" 
+                                        class="relative group p-2 rounded hover:bg-green-100 text-green-600 transition">
+                                                    <i class="fa-solid fa-eye"></i>
+                                            <span class="absolute left-1/2 bottom-0 transform -translate-x-1/2 translate-y-full mt-1 w-max px-2 py-1 text-xs text-white bg-gray-700 rounded opacity-0 group-hover:opacity-100 transition">
+                                                View
+                                            </span>
+                                        </a>
+                                    @endif
 
-                                {{-- Edit --}}
-                                @if($editRoute)
-                                    <a href="{{ route($editRoute, $row['id']) }}" title="Edit"
-                                    class="p-2 rounded hover:bg-blue-100 text-blue-600 transition">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M11 5h6m-6 4h6m-6 4h6m-6 4h6M4 5h.01M4 9h.01M4 13h.01M4 17h.01" />
-                                        </svg>
-                                    </a>
-                                @endif
+                                    {{-- Edit --}}
+                                    @if($editRoute)
+                                        <a href="{{ route($editRoute, $row['id']) }}" 
+                                        class="relative group p-2 rounded hover:bg-blue-100 text-blue-600 transition">
+                                            <i class="fa-solid fa-pencil"></i>
+                                            <span class="absolute left-1/2 bottom-0 transform -translate-x-1/2 translate-y-full mt-1 w-max px-2 py-1 text-xs text-white bg-gray-700 rounded opacity-0 group-hover:opacity-100 transition">
+                                                Edit
+                                            </span>
+                                        </a>
+                                    @endif
 
-                                {{-- Delete --}}
-                                @if($deleteRoute)
-                                    <form action="{{ route($deleteRoute, $row['id']) }}" method="POST"
-                                        onsubmit="return confirm('Are you sure you want to delete this record?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" title="Delete"
-                                                class="p-2 rounded hover:bg-red-100 text-red-600 transition">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                                viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </button>
-                                    </form>
-                                @endif
+                                    {{-- Delete --}}
+                                    @if($deleteRoute)
+                                        <form action="{{ route($deleteRoute, $row['id']) }}" method="POST" class="delete-form relative group">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" 
+                                                    class="p-2 rounded hover:bg-red-100 text-red-600 transition delete-btn">
+                                                <i class="fa-solid fa-trash"></i>
+                                                <span class="absolute left-1/2 bottom-0 transform -translate-x-1/2 translate-y-full mt-1 w-max px-2 py-1 text-xs text-white bg-gray-700 rounded opacity-0 group-hover:opacity-100 transition">
+                                                    Delete
+                                                </span>
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
                             </td>
                         @endif
                     </tr>
@@ -153,88 +156,82 @@
     </div>
 </div>
 
-{{-- DataTable JS --}}
 @push('scripts')
-<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.colVis.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-
 <script>
-$(document).ready(function() {
+    $(document).ready(function() {
 
-    // Get date range from inputs (if any)
-    let fromDate = $('#from_date').val();
-    let toDate = $('#to_date').val();
-    let dateRangeText = '';
-    if(fromDate || toDate){
-        dateRangeText = `Date Range: ${fromDate || 'Start'} to ${toDate || 'End'}`;
-    }
+        // Get date range from inputs (if any)
+        let fromDate = $('#from_date').val();
+        let toDate = $('#to_date').val();
+        let dateRangeText = '';
+        if(fromDate || toDate){
+            dateRangeText = `Date Range: ${fromDate || 'Start'} to ${toDate || 'End'}`;
+        }
 
-    $('#{{ $tableId }}').DataTable({
-        pageLength: 10,
-        searching: true,
-        responsive: true,
-        lengthChange: true,
-        info: true,
-        dom: 'Bfrtip',
-        buttons: [
-            {
-                extend: 'collection',
-                text: 'Export',
-                className: 'bg-indigo-600 text-white px-3 py-1 rounded shadow hover:bg-indigo-700',
-                buttons: [
-                    { 
-                        extend: 'copy', 
-                        text: 'Copy', 
-                        exportOptions: { columns: ':not(:last-child)' },
-                        title: dateRangeText || 'Transactions'
-                    },
-                    { 
-                        extend: 'csv', 
-                        text: 'CSV', 
-                        exportOptions: { columns: ':not(:last-child)' },
-                        title: dateRangeText || 'Transactions'
-                    },
-                    { 
-                        extend: 'excel', 
-                        text: 'Excel', 
-                        exportOptions: { columns: ':not(:last-child)' },
-                        title: dateRangeText || 'Transactions'
-                    },
-                    { 
-                        extend: 'pdf', 
-                        text: 'PDF', 
-                        exportOptions: { columns: ':not(:last-child)' },
-                        title: 'Transactions',
-                        customize: function (doc) {
-                            if(dateRangeText) {
-                                doc.content.splice(0,0,{ 
-                                    text: dateRangeText, 
-                                    style: 'subheader', 
-                                    margin: [0,0,0,12] 
-                                });
+        let table = $('#{{ $tableId }}').DataTable({
+            pageLength: 10,
+            searching: true,
+            responsive: true,
+            lengthChange: true,
+            info: true,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'collection',
+                    text: 'Export ',
+                    className: 'bg-indigo-600 text-white px-3 py-1 rounded-md shadow hover:bg-indigo-700 flex items-center gap-1',
+                    autoClose: true,
+                    buttons: [
+                        { 
+                            extend: 'copy', 
+                            text: 'Copy', 
+                            exportOptions: { columns: ':not(:last-child)' },
+                            title: dateRangeText || 'Transactions'
+                        },
+                        { 
+                            extend: 'csv', 
+                            text: 'CSV', 
+                            exportOptions: { columns: ':not(:last-child)' },
+                            title: dateRangeText || 'Transactions'
+                        },
+                        { 
+                            extend: 'excel', 
+                            text: 'Excel', 
+                            exportOptions: { columns: ':not(:last-child)' },
+                            title: dateRangeText || 'Transactions'
+                        },
+                        { 
+                            extend: 'pdf', 
+                            text: 'PDF', 
+                            exportOptions: { columns: ':not(:last-child)' },
+                            title: 'Transactions',
+                            customize: function (doc) {
+                                if(dateRangeText) {
+                                    doc.content.splice(0,0,{ 
+                                        text: dateRangeText, 
+                                        style: 'subheader', 
+                                        margin: [0,0,0,12] 
+                                    });
+                                }
                             }
+                        },
+                        { 
+                            extend: 'print', 
+                            text: 'Print', 
+                            exportOptions: { columns: ':not(:last-child)' },
+                            title: dateRangeText || 'Transactions'
                         }
-                    },
-                    { 
-                        extend: 'print', 
-                        text: 'Print', 
-                        exportOptions: { columns: ':not(:last-child)' },
-                        title: dateRangeText || 'Transactions'
-                    },
-                    { extend: 'colvis', text: 'Columns' },
-                ]
-            }
-        ],
-        columnDefs: [
-            { orderable: false, targets: -1 } // Actions column not orderable
-        ]
+                    ]
+                }
+            ],
+            columnDefs: [
+                { orderable: false, targets: -1 }
+            ]
+        });
+        if (table.rows().count() === 0) {
+            table.buttons().container().hide(); 
+        }
     });
-});
 </script>
 
 @endpush

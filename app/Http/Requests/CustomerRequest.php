@@ -17,12 +17,10 @@ class CustomerRequest extends FormRequest
     public function rules(): array
     {
         $customerId = null;
-
-        if ($this->route('id')) {
+        if ($this->route('customer')) {
             try {
-                $encryptedId = $this->route('id'); 
+                $encryptedId = $this->route('customer'); 
                 $customerId = SecureIdService::decrypt($encryptedId);
-
             } catch (\Exception $e) {
                 Log::error('CustomerRequest: Failed to decrypt customer ID: ' . $e->getMessage());
                 $customerId = null;

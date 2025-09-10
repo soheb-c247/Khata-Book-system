@@ -17,6 +17,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans text-gray-900 antialiased">
+            @include('partials.flash-messages')
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 
                     bg-gradient-to-r from-red-50 via-white to-red-100">
             <div>

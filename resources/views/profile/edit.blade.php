@@ -1,8 +1,5 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-lg text-gray-800">
-            Profile
-        </h2>
     </x-slot>
 
     <div class="py-6">

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use App\Services\SecureIdService;
 use Exception;
 use Illuminate\Http\Request;
+use App\Helpers\FileUploadHelper;
 
 class TransactionController extends Controller
 {
@@ -57,6 +58,11 @@ class TransactionController extends Controller
     {
         try {
             $data = $request->validated();
+        
+            if ($request->hasFile('file')) {
+                $data['file_path'] = FileUploadHelper::saveFile($request->file('file'), 'transactions');
+            }
+
             $transaction = Transaction::create($data);
 
             Log::info('Transaction created', [
@@ -97,16 +103,20 @@ class TransactionController extends Controller
             $transaction = Transaction::where('id', $id)
                 ->whereHas('customer', fn($q) => $q->where('user_id', auth()->id()))
                 ->firstOrFail();
+            $data = $request->validated();
 
-            $transaction->update($request->validated());
+            if ($request->hasFile('file')) {
+                $data['file_path'] = FileUploadHelper::saveFile($request->file('file'), 'transactions', $transaction->file_path);
+            }
+
+            $transaction->update($data);
 
             Log::info('Transaction updated', [
                 'user_id' => auth()->id(),
                 'transaction_id' => $transaction->id,
             ]);
 
-            return redirect()->route('transactions.index')
-                ->with('success', 'Transaction updated successfully!');
+            return redirect()->route('transactions.index')->with('success', 'Transaction updated successfully!');
         } catch (Exception $e) {
             Log::error('Transaction update failed', [
                 'user_id' => auth()->id(),

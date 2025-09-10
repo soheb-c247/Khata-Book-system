@@ -16,11 +16,22 @@ class Transaction extends Model
         'amount',
         'notes',
         'date',
+        'file_path',
     ];
 
     protected $casts = [
         'date' => 'datetime',
     ];
+
+    // Accessor to automatically prepend base URL
+    protected $appends = ['full_url'];
+
+    public function getFullUrlAttribute()
+    {
+        return $this->file_path ? asset('storage/' . $this->file_path) : asset('imgs/preview.png');
+    }
+
+
     /**
      * Relation: Transaction belongs to a Customer
      */

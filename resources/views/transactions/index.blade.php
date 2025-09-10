@@ -1,28 +1,25 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Transactions</h2>
     </x-slot>
     @php
         $columns = [
-            'date' => 'Date',
-            'customer' => 'Customer',
+            'name' => 'Name',
             'type' => 'Type',
             'amount' => 'Amount',
-            'notes' => 'Notes',
+            'date' => 'Date',
         ];
 
         $rows = $transactions->map(fn($t) => [
-            'date' => \Carbon\Carbon::parse($t->date)->format('d M, Y'),
-            'customer' => $t->customer->name,
-            'type' => ucfirst($t->type),
-            'amount' => $t->amount,
-            'notes' => $t->notes,
-            'id' => $t->encrypted_id,
+            'name'      => ucfirst($t->customer->name),
+            'type'      => ucfirst($t->type),
+            'amount'    => $t->amount,
+            'date'      => \Carbon\Carbon::parse($t->date)->format('d M, Y'),
+            'id'        => $t->encrypted_id,
         ]);
     @endphp
 
     <x-table.list 
-        title="Transaction List"
+        title="Transactions"
         :columns="$columns" 
         :rows="$rows" 
         editRoute="transactions.edit"

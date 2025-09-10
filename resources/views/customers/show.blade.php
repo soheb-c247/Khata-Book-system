@@ -1,8 +1,5 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Customer Details
-        </h2>
     </x-slot>
 
     <div class="max-w-7xl mx-auto space-y-6 mt-6">
@@ -55,7 +52,7 @@
                 </div>
                  <button 
                         type="button" 
-                        class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition self-end"
+                        class="bg-green-600 text-white text-sm px-3 py-1 rounded hover:bg-green-700 transition"
                         onclick="openStatementModal()">
                         Get Statement
                     </button>                
@@ -68,12 +65,11 @@
                     'date' => 'Date',
                     'type' => 'Type',
                     'amount' => 'Amount',
-                    'notes' => 'Note',
                 ];
             @endphp
 
             <x-table.list 
-                title="Transaction List"
+                title="Transaction"
                 :columns="$columns"
                 :rows="$rows"
                 editRoute="transactions.edit"
